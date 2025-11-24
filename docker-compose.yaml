@@ -1,0 +1,29 @@
+services:
+  db:
+    container_name: qapi_db
+    image: postgres:14.6
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: qapi_db
+      PGDATA: "/var/lib/postgresql/data"
+    volumes:
+      - .:/docker-entrypoint-initdb.d
+
+  web:
+    container_name: qapi_web
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    expose:
+      - "8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    command: ["sh", "-c", "alembic upgrade head && uvicorn app.__main__:app --host 0.0.0.0 --port 8000 --reload"]
