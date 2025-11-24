@@ -1,4 +1,5 @@
 from unittest.mock import AsyncMock, MagicMock
+
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -41,7 +42,9 @@ async def test_get_all_questions(question_repository, mock_session):
     assert result[1].text == "Question 2"
 
 
-async def test_get_question_by_id_with_answers_success(question_repository, mock_session):
+async def test_get_question_by_id_with_answers_success(
+    question_repository, mock_session
+):
     mock_answers = [
         MagicMock(spec=Answer, id=1, text="Answer 1", user_id="user1"),
         MagicMock(spec=Answer, id=2, text="Answer 2", user_id="user2"),
@@ -62,6 +65,7 @@ async def test_get_question_by_id_with_answers_success(question_repository, mock
     executed_stmt = mock_session.execute.call_args[0][0]
 
     from sqlalchemy.sql.selectable import Select
+
     assert isinstance(executed_stmt, Select)
     assert Question in [col.entity_namespace for col in executed_stmt._raw_columns]
 
@@ -72,7 +76,9 @@ async def test_get_question_by_id_with_answers_success(question_repository, mock
     assert result.answers[0].text == "Answer 1"
 
 
-async def test_get_question_by_id_with_answers_not_found(question_repository, mock_session):
+async def test_get_question_by_id_with_answers_not_found(
+    question_repository, mock_session
+):
     mock_result = MagicMock()
     mock_result.scalars.return_value.first.return_value = None
     mock_session.execute.return_value = mock_result

@@ -1,7 +1,9 @@
 import uuid
 from unittest.mock import AsyncMock, MagicMock
+
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.models.answer import Answer
 from app.repositories.answer_repository import AnswerRepository
 
@@ -45,8 +47,6 @@ async def test_create_answer_success(answer_repository, mock_session):
     user_id = uuid.uuid4()
     text = "Test answer"
     mock_question = MagicMock()
-    mock_answer = MagicMock()
-
     mock_result = MagicMock()
     mock_result.scalars.return_value.first.return_value = mock_question
     mock_session.execute = AsyncMock(return_value=mock_result)

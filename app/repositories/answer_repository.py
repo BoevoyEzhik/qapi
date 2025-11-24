@@ -36,4 +36,3 @@ class AnswerRepository:
         await self.session.delete(answer)
         await self.session.commit()
         return True
-

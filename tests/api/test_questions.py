@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 
 from httpx import AsyncClient
@@ -48,6 +49,30 @@ async def test_get_questions_empty_list(
 async def test_get_question_by_id_success(
     async_client: AsyncClient, override_question_service
 ):
+    user_id = str(uuid.uuid4())
+    mock_answers = [
+        {
+            "id": 1,
+            "text": "Answer 1",
+            "user_id": user_id,
+            "created_at": "2024-01-01T00:00:00",
+            "question_id": 1,
+        },
+        {
+            "id": 2,
+            "text": "Answer 2",
+            "user_id": user_id,
+            "created_at": "2024-01-01T00:00:00",
+            "question_id": 1,
+        },
+    ]
+
+    mock_question = {
+        "id": 1,
+        "text": "Test question",
+        "created_at": "2024-01-01T00:00:00",
+        "answers": mock_answers,
+    }
 
     override_question_service.get_question_by_id.return_value = mock_question
 
@@ -55,8 +80,13 @@ async def test_get_question_by_id_success(
 
     assert response.status_code == 200
     data = response.json()
+
     assert data["id"] == 1
     assert data["text"] == "Test question"
+    assert "answers" in data
+    assert len(data["answers"]) == 2
+    assert data["answers"][0]["text"] == "Answer 1"
+
     override_question_service.get_question_by_id.assert_called_once_with(1)
 
 

@@ -1,6 +1,9 @@
 from datetime import datetime
+from typing import List
 
 from pydantic import BaseModel, field_validator
+
+from app.schemas.answers import AnswerResponse
 
 
 class QuestionBase(BaseModel):
@@ -21,3 +24,7 @@ class QuestionResponse(QuestionBase):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class QuestionWithAnswersResponse(QuestionResponse):
+    answers: List[AnswerResponse] = []

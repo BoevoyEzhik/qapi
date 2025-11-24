@@ -3,7 +3,11 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.api.dependencies import QuestionService, get_question_service
-from app.schemas.questions import QuestionCreate, QuestionResponse
+from app.schemas.questions import (
+    QuestionCreate,
+    QuestionResponse,
+    QuestionWithAnswersResponse,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +24,7 @@ async def get_questions(
     return questions
 
 
-@questions_router.get("/{id}", response_model=QuestionResponse)
+@questions_router.get("/{id}", response_model=QuestionWithAnswersResponse)
 async def get_questions_by_id(
     id: int, question_service: QuestionService = Depends(get_question_service)
 ):
